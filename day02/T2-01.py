@@ -21,7 +21,7 @@ plt.scatter( perch_length , perch_weight )
 plt.show()
 
 # 3. 학습 모델 만들기
-# 1) 준비: 학흡용과 테스트용 분리. -왜?-> 모델평가에 사용하려고.
+# 1) 준비: 학습용(train)과 테스트용(test) 분리. -왜?-> 모델평가에 사용하려고.
 from sklearn.model_selection import train_test_split
 train_input, test_input, train_target, test_target = train_test_split( perch_length, perch_weight, test_size=0.3, random_state=42 )
     # `random_state=분리할 때 사용되는 난수값`: 난수값에 따라 분리한다. 0~32억 사이 아무 값이나 넣어주면 된다.
@@ -44,8 +44,8 @@ print( train_input )  # [17.4 36.  25.  40. (생략)] -> [[17.4] [36. ] [25. ] [
 test_input = test_input.reshape( -1, 1 )
 
 # 5. 모델 학습
-from sklearn.neighbors import KNeighborsClassifier  # K최근접이웃 모델
-from sklearn.neighbors import KNeighborsRegressor   # K최근접이웃 회귀
+from sklearn.neighbors import KNeighborsClassifier  # K최근접이웃 모델: 주변 이웃의 종류를 봄
+from sklearn.neighbors import KNeighborsRegressor   # K최근접이웃 회귀: 주변 이웃의 숫자를 봄
 knr = KNeighborsRegressor()                         # 모델 객체 생성
 knr.fit( train_input , train_target )               # 모델 학습 (길이, 무게) <- '길이'에 따른 '무게' 학습
 print( knr.score(test_input, test_target))          # 모델 평가
