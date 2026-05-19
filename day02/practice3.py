@@ -48,7 +48,7 @@ print()
 # 꽃받침 길이 4.0부터 6.0까지의 구간에 대한 모델의 예측 회귀선을 각각 시각화하세요.
 import numpy as np
 import matplotlib.pyplot as plt
-x = np.arange( 4.0 , 6.0 , 0.1 ).reshape( -1 , 1 )
+x = np.arange( 4.0 , 6.0 , 0.1 ).reshape( -1 , 1 )  # 0.1 이거는 넣으니까 그래프가 예뻐서 넣음
 for k in [1, 3, 5, 10]:
     knr.n_neighbors = k
     knr.fit( train_input , train_target )    
