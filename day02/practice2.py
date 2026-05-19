@@ -4,7 +4,7 @@
 # [단계 1] 데이터 로드 및 확인
 # 파일명: ./Iris.csv
 import pandas as pd
-df = pd.read_csv('./day01/iris.csv')
+df = pd.read_csv('./day01/Iris.csv')
 df.info()
 
 # [단계 2] 특정 품종 추출 (데이터 필터링)
