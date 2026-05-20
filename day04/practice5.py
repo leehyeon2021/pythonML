@@ -35,7 +35,7 @@ train_input , test_input , train_target , test_target = train_test_split( studen
 # 다항 확장: 특성(자료)들 간에 직선 관계 드물다. (단순회귀) , 물고기길이 , 물고기길이 제곱 , 물고기길이 세제곱 ~ (다항회귀)
 # 직선 관계가 아닌 곡선 관계 만들고 다양한 경우에 수 학습 자료 만든다. 주의할점: 과적합
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
-from sklearn.linear_model import LinearRegression, Ridge , Lasso
+from sklearn.linear_model import LinearRegression, Ridge, Lasso
 optimization = []   # 3번
 # 차수를 위한 반복문: 돌려서 결정계수 찾기
 for degree in [1,2,3,4,5]:
