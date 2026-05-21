@@ -103,7 +103,7 @@ print( train_poly )
 lr = LinearRegression()
 lr.fit( train_poly , train_target ) # 다항으로 학습
 # 예측할 자료, 길이 : 50인 무게 예측
-print( lr.predict([[50**2, 50]]))
+print( lr.predict([[50**2, 50]]))   # [1579.0440311]
 # 여러 개 예측
 point = np.arange( 15 , 50 )    # 15부터 50까지( 예측하고 싶은 범위 ) 1씩 증가하는 리스트 반환
 point_poly = np.column_stack( (point**2 , point) )    # 15~50 제곱한 열, 15~50열

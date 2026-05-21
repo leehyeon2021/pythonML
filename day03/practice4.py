@@ -7,11 +7,10 @@
 # 'SepalLengthCm' 열을 iris_length로, 'SepalWidthCm' 열을 iris_width로 추출하세요.
 import pandas as pd
 df = pd.read_csv('./day01/Iris.csv')
-#print( df.info())
+
 iris_data = df[ df['Species'].isin(['Iris-setosa'])]
 iris_length = iris_data['SepalLengthCm'].values
 iris_weidth = iris_data['SepalWidthCm'].values
-#print( iris_length , iris_weidth )
 
 # [단계 2] 훈련용 / 테스트용 데이터 분리
 # train_test_split() 함수를 사용하여 학습용 데이터와 테스트용 데이터를 분리하세요.
@@ -22,12 +21,12 @@ train_input , test_input , train_target , test_target = train_test_split(iris_le
 # [단계 3] 데이터 차원 변환 (Reshape)
 # 사이킷런 모델 학습을 위해 1차원 배열인 train_input과 test_input을 
 # [개수, 1] 형태의 2차원 배열로 변환하세요.
-#print(train_input, test_input)
-train_input = train_input.reshape( -1 , 1 )
+train_input = train_input.reshape( -1 , 1 ) # 대입 필요함
 test_input = test_input.reshape( -1 , 1 )
-#print(train_input, test_input)
+#print( train_input )
+#print( test_input )
 
-# [단계 4] 단순 선형 회귀(Linear Regression) 모델 학습 및 평가
+# [단계 4] 단순 선형 회귀(LinearRegression) 모델 학습 및 평가
 # 1) LinearRegression 객체를 생성하고 변환된 train_input 데이터로 모델을 학습하세요.
 # 2) 학습된 모델의 훈련 세트와 테스트 세트의 결정계수(R^2)를 각각 출력하세요.
 # 3) 모델의 기울기(coef_)와 절편(intercept_)을 각각 출력하세요.
@@ -43,26 +42,42 @@ print( lr.intercept_ )                          # 절편            : -0.3876310
 # 꽃받침 너비의 비선형적 흐름을 반영하기 위해 numpy의 column_stack을 사용하여
 # [길이^2, 길이] 형태의 2차원 배열 구조를 가진 train_poly와 test_poly를 각각 생성하세요.
 import numpy as np
-train_poly = np.column_stack( (train_input**3 , train_input) )
-test_poly = np.column_stack( (test_input**3 , test_input))
+train_poly = np.column_stack( (train_input**2 , train_input) )
+test_poly = np.column_stack( (test_input**2 , test_input))
 
 # [단계 6] 다항 회귀 모델 학습 및 결정계수(R^2) 확인
 # 1) LinearRegression 객체를 새로 생성하고 train_poly 데이터로 모델을 학습하세요.
 # 2) 학습된 다항 회귀 모델의 훈련 세트와 테스트 세트의 결정계수(R^2)를 각각 출력하여 
 # 단순 선형 회귀와 비교하세요.
 lr = LinearRegression()
-lr.fit( train_poly , train_target )
-lr.fit( test_poly , test_target )
+lr.fit( train_poly , train_target )                 # 모델 평가
+print( lr.score( test_poly , test_target ) )        # 0.541312514118734
+print( lr.score( train_poly , train_target ) )      # 0.5444662337785282
 
 # [단계 7] 다항 회귀 모델을 통한 임의의 값 예측
 # 학습된 다항 회귀 모델을 사용하여 꽃받침 길이가 4.0일 때와 6.0일 때의 꽃받침 너비를 각각 예측하여 출력하세요.
-
+lr.fit( train_poly, train_target )
+print( lr.predict([[4.0**2, 4.0]]) )    # [2.59477611]
+print( lr.predict([[6.0**2, 6.0]]) )    # [2.56890601]
 
 # [단계 8] 다항 회귀 곡선 시각화
 # 1) 4.0부터 6.0까지 0.1 간격으로 증가하는 배열(point)을 생성하고, 
 # 이를 다항 특성(point_poly)으로 변환하세요.
 # 2) 산점도(scatter)를 이용해 원래의 train_input과 test_input 데이터를 시각화하세요.
 # 3) 앞서 생성한 point와 다항 회귀 모델의 예측값(predict)을 사용하여 2차 방정식 형태의 곡선(회귀선)을 그리세요.
+point = np.arange( 4.0 , 6.0 , 0.1 )
+# print( point )
+point_poly = np.column_stack( (point**2 , point ) )
+# print( point_poly )
+
+import matplotlib.pyplot as plt
+plt.scatter( train_input , train_target )
+plt.plot( point , lr.predict( point_poly ) )
+plt.show()
 
 # [단계 9] 단순 선형 회귀(1차 방정식)와 비교했을 때, 
 # 특성을 제곱한 다항 회귀(2차 방정식)가 가지는 수학적/표현적 장점을 주석으로 서술하시오.
+    # 1차방정식: 예측 = 가중치*특성 + y절편
+    # 단순 선형 회귀의 단점: 무게가 반드시 비례하지 않을 때 표현에 문제 생김
+    # 2차방정식: 예측 = (가중치*특성제곱) + (가중치*특성) + y절편
+    # 다항 회귀의 장점: 최적의 제곱을 찾아 정확도를 최적화해준다.
