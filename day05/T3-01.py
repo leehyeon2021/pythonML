@@ -1,4 +1,7 @@
 
+# 로지스틱 회귀 모델 ( 이진분류 , 다중분류 )
+# 시그모이드 함수가 중요 역할, 확률을 보여줌.
+
 # 1. 여러가지 특성에 따른 분류 모델
 import pandas as pd
 df = pd.read_csv('./day01/Fish.csv')
@@ -19,7 +22,7 @@ test_scaled = ss.transform( test_input )
 
 # 로지스틱 회귀 = 이진분류 = 시그모이드 함수(공식)
 # 선형 방정식의 출력값을 0과 1(확률/분류) 사이의 값으로 변환해주는 공식/함수
-# 사용처) 암 발병 확률 / 스팸 메일 분류 등  이진분류 알고리즘을 사용한다.
+# 사용처) 암 발병 확률 / 스팸 메일 분류 등: 이진분류 알고리즘을 사용한다.
 # 즉) 컴퓨터는 수치상의 150 또는 -82.3 (수치)값으로 말하는 확률이라 어려움
     # 확률이란?: 항상 0(0%)에서 1(100%) 사이어야 한다.
 import numpy as np
@@ -67,7 +70,7 @@ print( lr.score( test_scaled , test_target ) )  # 0.85
 # 소프트맥스
 from scipy.special import softmax
 decision = lr.decision_function( test_scaled[ : 3] )
-print( decision )   # 0.925
+print( decision )                               # 0.925
 print( softmax( decision ) )
     # # `softmax` 함수로 결과값을 확인했을 때 predict와 동일하게 출력된다.
 print( np.round( softmax( decision ) , decimals= 3 ) )  # np.round( 값 , decimals= 소수점)
