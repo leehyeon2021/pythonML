@@ -64,13 +64,13 @@ lr = LogisticRegression( C=20 , max_iter=1000 )
 lr.fit( train_scaled , train_target )   # 모든 어종 학습
 # 모델 예측
 print( lr.predict( test_scaled[: 3]) )          # 3개만 예측 ['Perch' 'Smelt' 'Pike']
-print( lr.predict_proba( test_scaled[ : 3]) )   # 3개만 예측 확률: 분류개수 만큼의 확률
+print( lr.predict_proba( test_scaled[ : 3]) )   # 3개만 예측 확률: 분류개수 만큼의 확률 (Probability: 확률)
 # 모델 평가: 선형 회귀와 다르게 **결정계수**라고 하지 않고 맞힌 **비율(정확도)**를 반환한다고 한다.
 print( lr.score( test_scaled , test_target ) )  # 0.85
 # 소프트맥스
 from scipy.special import softmax
 decision = lr.decision_function( test_scaled[ : 3] )
-print( decision )                               # 0.925
+print( decision )                                    # 0.925
 print( softmax( decision ) )
     # # `softmax` 함수로 결과값을 확인했을 때 predict와 동일하게 출력된다.
 print( np.round( softmax( decision ) , decimals= 3 ) )  # np.round( 값 , decimals= 소수점)

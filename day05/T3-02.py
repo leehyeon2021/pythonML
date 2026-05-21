@@ -74,3 +74,18 @@ plt.plot( test_score )      # 테스트용 정확도 점수
 # 학습용과 테스트용이 고르게 오르는 시점: 최적. 적합
 # (에포크(x축)를 조절하면서 보기)
 plt.show()
+
+# 5. 
+sc = SGDClassifier( loss='hinge', max_iter=100, random_state=42, alpha=0.0001 )
+sc.fit( train_scaled , train_target )
+print( sc.score( train_scaled, train_target ) )     # 0.9159663865546218
+print( sc.score( test_scaled, test_target ) )       # 0.925
+
+# 로지스틱 회귀: 확률을 이용한 분류(`log_loss`)
+# SGD(확률 경사 하강법 / 미니배치): `loss='log_loss' vs. `loss='hinge'`
+# 경사하강법: 손실(예측과 정답 오차)
+# `loss='log_loss'`
+    # 도미일 확률이 51%일 때 기울기(가중치) 절편으로 수없이 조정하여 확률을 100% 만드는 방법 (경사하강법)
+# `loss = 'hinge'`
+    # 전체데이터가 아닌 경계선에 있는 것들..
+    # -> 도미일 확률이 50%일 때, 0인 지점이 애매하고아슬아슬한(경계선) 자료만 가지고 확률(오차)을 조정하는 방법 (경사하강법)
