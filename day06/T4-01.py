@@ -1,5 +1,5 @@
 
-# 결정 트리 , 트리 노드
+# 결정 트리(DecisionTreeClassifier) , 트리 노드(plot_tree)
 
 import pandas as pd
 df = pd.read_csv('./day06/wine.csv')
