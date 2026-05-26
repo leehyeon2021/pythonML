@@ -2,20 +2,20 @@
 
 #  교차검증(cross_validate), 그리드 서치(GridSearchCV), 랜덤 서치(RandomizedSearchCV)
 
-# * 그래픽카드 사양 중요. 학습 시엔 코랩 사용
+# * 사이킷런은 오직 CPU(직렬계산)만 사용해서 계산
+# * 학습 시엔 코랩(Colab) 사용: 그래픽카드(GPU(병렬계산)) 사양 중요하기 때문
+
 
 import pandas as pd
 df = pd.read_csv('./day06/wine.csv')
 #print( df.head(10) ) 
-
 # alcohol , sugar , pH , class
-
 # 1. 와인 정보 불러오기
 data = df[ ['alcohol','sugar','pH']]    # 와인의 속성 3개
 target = df['class']                    # 1:화이트와인 0:레드와인
-
 from sklearn.model_selection import train_test_split
 train_input , test_input , train_target , test_target = train_test_split( data, target, random_state=42 )
+
 
 # 2. 결정 트리 (분류모델) (전처리 중요함)
 from sklearn.tree import DecisionTreeClassifier
