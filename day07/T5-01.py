@@ -100,3 +100,61 @@ plt.scatter( scaledDf[:,0] , scaledDf[:,1] , c=df['cluster'] )
 plt.scatter( scaledNewDf[:,0] , scaledNewDf[:,1] , marker='^' )
 plt.show()
 # 현재 특성이 3개 이므로 3D차원 시각화 필요 -> N차원(특성많으면) 시각화는 힘들다.
+
+
+# 5. PCA: 차원 축소 , 주성분 분석 목적. 차원이 크면 시각화가 불가능하다. 주로 2차원/3차원 압축한다.
+    # => PCA는 여러 개 성분을 하나로 해주는 역할
+from sklearn.decomposition import PCA
+# 여러 개 특성/성분을 가진 모델들을 2/3 차원으로 변경
+pca = PCA( n_components=2 )     # 객체 생성: 주로 2 또는 3으로 사용된다.
+# 주성분 만들기: 각 특성/성분 마다의 가중치 터해서 데이터 변동성 계싼
+# 예) pca = 무게*가중치1 + 당도*가중치2 + 단단함*가중치3
+pcaDf = pca.fit_transform( scaledDf )
+print( pcaDf )      # 행 = 데이터 수 / 열 = 주성분 수
+df['pca_x'] = pcaDf[:,0]    # 첫 번째 열을 제1주성분  ->  데이터의 변동성을 가장 크게 설명하는 주성분
+df['pca_y'] = pcaDf[:,1]    # 두 번째 열을 제2주성분  -> 제1주성분을 직교하면서 두번째로 변동성(가중치)을 가장 크게 설명하는 주성분
+# 주성분의 가중치 확인
+compoenets = pca.components_
+print( compoenets )         # 무게가중치, 당도가중치, 단단가중치
+# 예측할 값도 주성분으로 변경 ((X) pca_1은 무게고 pca_2는 단단함이다 라고 해석하면 안 됨)
+    # 변경하는 이유: 앞전엔 임의로 시각화 한 거지, 군집의 시각화를 위해선 특성을 표현하기 위해 pca를 사용해 변경해줘야 한다.
+pcaNewDf = pca.transform( scaledNewDf )
+# 시각화
+plt.scatter( df['pca_x'] , df['pca_y'] , df['cluster'] , cmap='virids' , marker='o')
+plt.scatter( pcaNewDf[: , 0] , pcaNewDf[: , 1] , marker='^')            # 예측할 값
+plt.xlabel('pca_1')
+plt.ylabel('pca_2') 
+plt.show()
+
+
+# 6. 분석 모델 스코어: 실루엣 스코어( 분리/응집 평가 )
+from sklearn.metrics import silhouette_score
+# `silhouette_score( 자료 , 모델군집 )`
+sc = silhouette_score( scaledDf , km.labels_ )              # k-mean 평가 모델
+print( sc )                                                 # 0.443044585687068
+
+# gm 가우시안 모델에서는 k-mean처럼 lables_ 속성이 없다.
+    # => 그래서 예측을 통해 군집도를 구한다.
+sc = silhouette_score( scaledDf , gm.predict( scaledDf ) )  # GMM 평가 모델 
+print( sc )                                                 # 0.46537942714394775
+
+
+
+# 스코어 개선
+# 1. 최적의 K
+# 2. PCA 주성분(가중치)
+# 3. 이상치 제거( 튀는 자료는 군집 제외 ) 등등
+
+
+# 7. HDBCN 모델: 자동으로 최적의 K 하고 이상치 제거해주는 모델
+# 외부라이브러리 설치 `py -m pip install hdbscan`
+import hdbscan
+# `min_cluster_size=` 최소 클러스터 개수
+# `min_samples=` 클러스터들의 중심점이 되기 위한 최소 자료(샘플) 수 (최소 2개 이상부터 군집 가능)
+# `prediction_data=True` 학습된 모델이 새로운 데이터를 예측할 경우 캐시(임시메모리) 활성화 (왠만하면 True)
+hdb = hdbscan.HDBSCAN( min_cluster_size=2 , min_samples=2 , prediction_data=True )     # 객체 생성
+hdb.fit( scaledDf )
+print( hdb.labels_ )                                            # -1(이상치 샘플): 어디에도 속하지 않은 샘플
+# [-1  2  2  0 -1  0 -1 -1 -1  3  4 -1  1  1  1 -1  2  2  1  1  2 -1  0  2  3  2 -1  2 -1 -1  3 -1  4  2  2  4  4 -1]
+print( hdbscan.approximate_predict( hdb , scaledDf ) )
+print( hdbscan.approximate_predict( hdb , scaledNewDf ) )   # [1] : 1그룹 예측
